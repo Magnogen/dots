@@ -7,7 +7,7 @@ on('load', async () => {
   c.width = width;
   c.height = height;
   
-  const radius = 10;
+  const radius = 12;
   const length = 0|(width / (3*radius)) + 3;
   const depth = 0|(height / (3*radius)) + 3;
   const padX = -radius * 3;
@@ -21,6 +21,19 @@ on('load', async () => {
   on('mousemove', ({ x, y }) => {
     mouse.pos.x = x;
     mouse.pos.y = y;
+  });
+  
+  // thank you, .sys_ on Discord!
+  on("touchmove", ({ targetTouches }) => {
+    mouse.pos.x = targetTouches[0].clientX;
+    mouse.pos.y = targetTouches[0].clientY;
+  });
+
+  on("touchstart", ({ targetTouches }) => {
+    mouse.pos.x = targetTouches[0].clientX;
+    mouse.pos.y = targetTouches[0].clientY;
+    mouse.lastPos.x = targetTouches[0].clientX;
+    mouse.lastPos.y = targetTouches[0].clientY;
   });
   
   // https://iquilezles.org/articles/distfunctions2d/
@@ -53,9 +66,10 @@ on('load', async () => {
     
     return {
       render() {
+        const dist = Math.hypot(pos.x - start.x, pos.y - start.y);
         ctx.fillStyle = '#404040';
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y, radius, 0, 2*Math.PI);
+        ctx.arc(pos.x, pos.y, 4*radius*dist/width, 0, 2*Math.PI);
         ctx.fill();
       },
       update(dt) {
