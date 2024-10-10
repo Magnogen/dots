@@ -8,8 +8,8 @@ on('load', async () => {
   c.height = height;
   
   const radius = 12;
-  const length = 0|(width / (3*radius)) + 3;
-  const depth = 0|(height / (3*radius)) + 3;
+  const length = 0|(width / (2*radius)) + 3;
+  const depth = 0|(height / (2*radius)) + 3;
   const padX = -radius * 3;
   const padY = -radius * 3;
   
@@ -60,7 +60,7 @@ on('load', async () => {
     
     const update = Sorder(pos, ['x', 'y'], {
       frequency: 1,
-      springiness: 0.5,
+      springiness: 1,
       response: 0,
     });
     
@@ -74,8 +74,9 @@ on('load', async () => {
       },
       update(dt) {
         const dist = distToLine(pos, mouse.lastPos, mouse.pos);
-        pos.x = start.x + 8*(mouse.pos.x - mouse.lastPos.x)*Math.exp(-dist/width*10);
-        pos.y = start.y + 8*(mouse.pos.y - mouse.lastPos.y)*Math.exp(-dist/width*10);
+        const amount = Math.exp(-100 * (dist*dist)/(width*width))
+        pos.x = start.x + 8*(mouse.pos.x - mouse.lastPos.x)*amount;
+        pos.y = start.y + 8*(mouse.pos.y - mouse.lastPos.y)*amount;
         update(dt);
       },
     };
